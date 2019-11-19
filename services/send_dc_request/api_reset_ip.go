@@ -1,6 +1,7 @@
 package send_dc_request
 
 import (
+	"crawl_html_from_dc/settings"
 	"errors"
 	"fmt"
 	"github.com/panwenbin/ghttpclient"

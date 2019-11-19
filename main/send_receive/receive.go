@@ -1,7 +1,10 @@
 package send_receive
 
 import (
+	"crawl_html_from_dc/jobs"
 	"crawl_html_from_dc/services/get_response_html"
+	"crawl_html_from_dc/services/send_dc_request"
+	"crawl_html_from_dc/settings"
 	"errors"
 	"fmt"
 	"time"

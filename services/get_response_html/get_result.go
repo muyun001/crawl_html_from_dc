@@ -49,9 +49,9 @@ func GetDcResult(requestUrl string) ([]byte, error) {
 		}
 	}
 
-	if !strings.Contains(string(body), "result") {
-		return body, nil
-	}
+	//if !strings.Contains(string(body), "result") {
+	//	return body, nil
+	//}
 
 	return body, nil
 }

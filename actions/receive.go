@@ -15,8 +15,9 @@ const (
 	CodeReceiveGetResultSuccess    = 200 // 获取结果成功
 	CodeReceiveTaskInquiring       = 201 // 任务正在查询
 	CodeReceiveDcNoThisTask        = 300 // 下载中心暂时没有此任务
-	CodeReceiveGetRDataMapError    = 500 // 从结果提取rdata结构的map出错
+	CodeReceiveGetRDataMapError    = 500 // 从结果提取rData结构的map出错
 	CodeReceiveReceiveFromApiError = 501 // 从下载中心接口取结果出错
+	CodeReceiveStatusError         = 502 // 返回状态码有问题(不是1或2)
 	CodeReceiveRequestFormError    = 400 // 访问此接口时参数格式不正确
 )
 
@@ -62,7 +63,7 @@ func DcReceive(c *gin.Context) {
 
 	for uniqueMd5 := range rDataMap {
 		switch rDataMap[uniqueMd5].Status {
-		case 1:
+		case 0, 1:
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"code": CodeReceiveTaskInquiring,
 				"msg":  "获取结果失败",
@@ -77,6 +78,14 @@ func DcReceive(c *gin.Context) {
 				"data": dcResponse,
 			})
 			return
+
+		default:
+			c.JSON(http.StatusOK, gin.H{
+				"code": CodeReceiveStatusError,
+				"msg":  "获取结果失败",
+				"err":  "返回状态码未知",
+				"data": dcResponse,
+			})
 		}
 	}
 }

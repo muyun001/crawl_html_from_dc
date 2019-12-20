@@ -26,17 +26,17 @@ func DcSend(c *gin.Context) {
 	}
 
 	if err := send_receive.Send(sendRequest); err != nil {
-		if err.Error() == "重复插入数据" {
+		if err.Error() == "重复插入任务" {
 			c.JSON(http.StatusOK, gin.H{
 				"code": CodeSendRequestRepeat,
-				"msg":  "重复插入数据",
+				"msg":  "重复插入任务",
 			})
 			return
 		}
 
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": CodeSendRequestToDcError,
-			"msg":  "请求发送失败",
+			"msg":  "任务发送失败",
 			"err":  err.Error(),
 		})
 		return
@@ -44,6 +44,6 @@ func DcSend(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"code": CodeSendRequestSuccess,
-		"msg":  "请求发送成功",
+		"msg":  "任务发送成功",
 	})
 }

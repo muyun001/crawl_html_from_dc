@@ -39,7 +39,7 @@ func SendDcRequest(request *build_dc_request.DcSetTaskRequest) (string, error) {
 
 	uniqueMd5 := send_dc_request.ResponseUniqueMd5(dcSendRequestResponse.RData)
 	if strings.Contains(string(body), "task insert error") {
-		return uniqueMd5, errors.New("重复插入数据")
+		return uniqueMd5, errors.New("重复插入任务")
 	}
 
 	return uniqueMd5, nil

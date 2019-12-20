@@ -9,7 +9,6 @@ import (
 	"fmt"
 )
 
-
 // 发送请求
 func Send(request *api.SendRequest) error {
 	// 构建下载中心请求
@@ -22,7 +21,7 @@ func Send(request *api.SendRequest) error {
 	_, err = jobs.SendDcRequest(dcRequest) // uniqueMd5
 	if err != nil {
 		fmt.Println(err)
-		if err.Error() == "重复插入数据" {
+		if err.Error() == "重复插入任务" {
 			return err
 		}
 

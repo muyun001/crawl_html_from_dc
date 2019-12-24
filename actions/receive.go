@@ -2,6 +2,7 @@ package actions
 
 import (
 	"crawl_html_from_dc/main/send_receive"
+	"crawl_html_from_dc/services/api"
 	"crawl_html_from_dc/services/get_response_html"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -22,8 +23,8 @@ const (
 )
 
 func DcReceive(c *gin.Context) {
-	receive := &Receive{}
-	if err := c.BindJSON(receive); err != nil {
+	receiveRequest := &api.SendRequest{}
+	if err := c.BindJSON(receiveRequest); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": CodeReceiveRequestFormError,
 			"msg":  "请求格式不正确",
@@ -32,7 +33,7 @@ func DcReceive(c *gin.Context) {
 		return
 	}
 
-	dcResponse, err := send_receive.AsynReceive(receive.Url)
+	dcResponse, err := send_receive.AsynReceive(receiveRequest)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code": CodeReceiveReceiveFromApiError,

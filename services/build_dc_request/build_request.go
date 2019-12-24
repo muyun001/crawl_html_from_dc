@@ -1,22 +1,23 @@
 package build_dc_request
 
 import (
+	"crawl_html_from_dc/services/api"
 	"crawl_html_from_dc/settings"
 	"encoding/json"
 )
 
-func BuildRequest(url, cookie, userAgent string) (*DcSetTaskRequest, error) {
-	headersStr, err := getHeaders(cookie, userAgent)
+func BuildRequest(request *api.SendRequest) (*DcSetTaskRequest, error) {
+	headersStr, err := getHeaders(&request.Headers)
 	if err != nil {
 		return &DcSetTaskRequest{}, err
 	}
 
-	cookieStr, err := getConfig()
+	configStr, err := getConfig(&request.Config)
 	if err != nil {
 		return &DcSetTaskRequest{}, err
 	}
 
-	urlsStr, err := getUrls(url)
+	urlsStr, err := getUrls(request.Url.Url)
 	if err != nil {
 		return &DcSetTaskRequest{}, err
 	}
@@ -24,19 +25,14 @@ func BuildRequest(url, cookie, userAgent string) (*DcSetTaskRequest, error) {
 	dcRequest := &DcSetTaskRequest{
 		UserID:  settings.DcUserId,
 		Headers: headersStr,
-		Config:  cookieStr,
+		Config:  configStr,
 		Urls:    urlsStr,
 	}
 
 	return dcRequest, nil
 }
 
-func getHeaders(cookie, userAgent string) (string, error) {
-	header := &DcHeaders{
-		Cookie:    cookie,
-		UserAgent: userAgent,
-	}
-
+func getHeaders(header *api.DcHeaders) (string, error) {
 	headerByte, err := json.Marshal(header)
 	if err != nil {
 		return "", err
@@ -45,12 +41,7 @@ func getHeaders(cookie, userAgent string) (string, error) {
 	return string(headerByte), nil
 }
 
-func getConfig() (string, error) {
-	config := &DcConfig{
-		Redirect: DcRedirectFalse,
-		Priority: DcPriorityMiddle,
-	}
-
+func getConfig(config *api.DcConfig) (string, error) {
 	configByte, err := json.Marshal(config)
 	if err != nil {
 		return "", err

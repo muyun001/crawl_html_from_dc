@@ -1,6 +1,7 @@
 package get_response_html
 
 import (
+	"crawl_html_from_dc/services/api"
 	"crawl_html_from_dc/services/build_dc_request"
 	"crawl_html_from_dc/settings"
 	"crawl_html_from_dc/utils/json_utils"
@@ -17,13 +18,13 @@ import (
 const GET_DC_GET_RESULT = "/download/getResult"
 
 // 获取查询结果
-func GetDcResult(requestUrl string) ([]byte, error) {
-	configStr, err := getConfig()
+func GetDcResult(request *api.SendRequest) ([]byte, error) {
+	configStr, err := getConfig(request.Config)
 	if err != nil {
 		return nil, err
 	}
 
-	urlsStr, err := getUrls(requestUrl)
+	urlsStr, err := getUrls(request.Url.Url)
 	if err != nil {
 		return nil, err
 	}
@@ -56,12 +57,8 @@ func GetDcResult(requestUrl string) ([]byte, error) {
 	return body, nil
 }
 
-func getConfig() (string, error) {
-	dcConfig := build_dc_request.DcConfig{
-		Redirect: build_dc_request.DcRedirectFalse,
-		Priority: build_dc_request.DcPriorityMiddle,
-	}
-	configJsonBytes, err := json.Marshal(dcConfig)
+func getConfig(config api.DcConfig) (string, error) {
+	configJsonBytes, err := json.Marshal(config)
 	if err != nil {
 		return "", err
 	}

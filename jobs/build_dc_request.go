@@ -7,7 +7,7 @@ import (
 
 // 构建下载中心请求
 func BuildDcRequest(request *api.SendRequest) (*build_dc_request.DcSetTaskRequest, error) {
-	dcRequest, err := build_dc_request.BuildRequest(request.Url, request.Headers.Cookie, request.Headers.UserAgent)
+	dcRequest, err := build_dc_request.BuildRequest(request)
 	if err != nil {
 		return dcRequest, err
 	}

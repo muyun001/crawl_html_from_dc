@@ -2,6 +2,7 @@ package send_receive
 
 import (
 	"crawl_html_from_dc/jobs"
+	"crawl_html_from_dc/services/api"
 	"crawl_html_from_dc/services/get_response_html"
 	"crawl_html_from_dc/services/send_dc_request"
 	"crawl_html_from_dc/settings"
@@ -11,8 +12,8 @@ import (
 )
 
 // 异步获取下载中心结果
-func AsynReceive(url string) (*get_response_html.DcApiResponse, error) {
-	dcResponseBytes, err := get_response_html.GetDcResult(url)
+func AsynReceive(request *api.SendRequest) (*get_response_html.DcApiResponse, error) {
+	dcResponseBytes, err := get_response_html.GetDcResult(request)
 	if err != nil {
 		return &get_response_html.DcApiResponse{}, err
 	}
@@ -26,17 +27,17 @@ func AsynReceive(url string) (*get_response_html.DcApiResponse, error) {
 }
 
 // 同步获取下载中心结果
-func SyncReceive(url string) (string, error) {
+func SyncReceive(request *api.SendRequest) (string, error) {
 	var html string
 	var err error
 	startTimeToGetHtml := time.Now()
 
 	for {
-		html, err = jobs.GetResponseHtml(url)
+		html, err = jobs.GetResponseHtml(request)
 		if err != nil {
 			if newIp, err := send_dc_request.SendResetIp(); err == nil {
 				settings.DcApi = "http://" + newIp
-				html, err = jobs.GetResponseHtml(url)
+				html, err = jobs.GetResponseHtml(request)
 				if err != nil {
 					return "", errors.New(fmt.Sprintf("获取返回结果出错，err: %s", err.Error()))
 				}
